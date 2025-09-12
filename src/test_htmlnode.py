@@ -40,3 +40,12 @@ class TestHTMLNode(unittest.TestCase):
         print(f"\nResult: {result}")
         print(f"Validation: {validation}")
         self.assertEqual(validation, result)
+
+    def test_props_to_html_no_props(self):
+        prop = None
+        node = HTMLNode(None, None, None, prop)
+        result = node.props_to_html()
+        validation = ''
+        print(f"\nResult: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)

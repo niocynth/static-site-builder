@@ -48,17 +48,37 @@ class TestTextNode(unittest.TestCase):
         self.assertNotEqual(validation1, result2)
 
     def test_split_nodes_delimited_missing_delimiter(self):
-        node = TextNode("This is **bold text** in a sentence.", TextType.TEXT)
+        node = TextNode("This is **bold text in a sentence.", TextType.TEXT)
         print("\nsplit_node_delimited_missing_delimiter")
-        print('Exception: Invalid Markdown syntax "_"')
-        with self.assertRaisesRegex(Exception, 'Invalid Markdown syntax "_"'):
-            split_nodes_delimited([node], "_", TextType.ITALIC)
+        print("Exception: Invalid Markdown syntax")
+        with self.assertRaisesRegex(Exception, "Invalid Markdown syntax"):
+            split_nodes_delimited([node], "**", TextType.BOLD)
 
     def test_split_nodes_delimited_multiple_input(self):
         nodes = [TextNode("This is **bold text** in a sentence.", TextType.TEXT), TextNode("This sentence has **bold text** and a `code block` in it.", TextType.TEXT)]
         result = split_nodes_delimited(nodes, "**", TextType.BOLD)
         validation = [TextNode("This is ", TextType.TEXT), TextNode("bold text", TextType.BOLD), TextNode(" in a sentence.", TextType.TEXT),TextNode("This sentence has ", TextType.TEXT), TextNode("bold text", TextType.BOLD), TextNode(" and a `code block` in it.", TextType.TEXT)]
         print("\nsplit_node_delimited_bold_multiple_input")
+        print(f"Result: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)
+
+    def test_split_nodes_delimited_double(self):
+        node = TextNode("This sentence has **bold text** and a `code block` in it.", TextType.TEXT)
+        first = split_nodes_delimited([node], "**", TextType.BOLD)
+        result = split_nodes_delimited(first, "`", TextType.CODE)
+        validation = [TextNode("This sentence has ", TextType.TEXT), TextNode("bold text", TextType.BOLD), TextNode(" and a ", TextType.TEXT), TextNode("code block", TextType.CODE), TextNode(" in it.", TextType.TEXT)]
+        print("\nsplit_node_delimited_double")
+        print(f"First: {first}")
+        print(f"Result: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)
+
+    def test_split_nodes_delimited_italics_start(self):
+        node = TextNode("_italic text_ at the start of the sentence", TextType.TEXT)
+        result = split_nodes_delimited([node], "_", TextType.ITALIC)
+        validation = [TextNode("italic text", TextType.ITALIC), TextNode(" at the start of the sentence", TextType.TEXT)]
+        print("\nsplit_node_delimited_italics_start")
         print(f"Result: {result}")
         print(f"Validation: {validation}")
         self.assertEqual(validation, result)

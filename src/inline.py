@@ -10,7 +10,12 @@ def split_nodes_delimited(old_nodes, delimiter, text_type):
         elif delimiter not in node.text:
             raise Exception(f'Invalid Markdown syntax "{delimiter}"')
         else:
-            temp = node.text.split(delimiter)
-            print(temp)
-        
-    print(result)
+            split = []
+            split.extend(node.text.split(delimiter))
+            print(split)
+            for i in range(len(split)):
+                if i % 2 == 0 and split[i] != "":
+                    result.append(TextNode(split[i], TextType.TEXT))
+                elif i % 2 != 0 and split[i] != "":
+                    result.append(TextNode(split[i], text_type))
+    return result

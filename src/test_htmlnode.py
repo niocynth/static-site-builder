@@ -1,6 +1,7 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from textnode import *
+from htmlnode import *
 
 class TestHTMLNode(unittest.TestCase):
     # HTMLNode tests
@@ -129,3 +130,6 @@ class TestHTMLNode(unittest.TestCase):
         print("ValueError: All parent nodes must have a tag")
         with self.assertRaisesRegex(ValueError, "All parent nodes must have a tag"):
             parent_node.to_html()
+
+if __name__ == "__main__":
+    unittest.main()

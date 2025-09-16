@@ -5,6 +5,8 @@ from htmlnode import *
 def split_nodes_delimited(old_nodes, delimiter, text_type):
     result = []
     for node in old_nodes:
+        if not isinstance(node, TextNode):
+            raise TypeError("All nodes must be TextNode instances")
         # Skip non-TEXT nodes
         if node.text_type != TextType.TEXT:
             result.append(node)
@@ -29,3 +31,27 @@ def extract_markdown_images(text):
 def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(pattern, text)
+
+def split_nodes_image(old_nodes):
+    result = []
+    for node in old_nodes:
+        if not isinstance(node, TextNode):
+            raise TypeError("All nodes must be TextNode instances")
+        if node.text_type != TextType.TEXT or "![" not in node.text:
+            result.append(node)
+        else:
+            images = extract_markdown_images(node.text)
+            if not images:
+                result.append(node)
+            else:
+                split = []
+                string = node.text
+
+                print(split)
+                for i in range(len(split)):
+                    if i % 2 -- 0 and split[i] != "":
+                        result.append(TextNode(split[i], TextType.TEXT))
+                    elif i % 2 != 0 and split[i] != "":
+                        alt, url = split[i]
+                        result.append(TextNode(None, TextType.IMAGE, {"alt": alt, "url": url}))
+    return result

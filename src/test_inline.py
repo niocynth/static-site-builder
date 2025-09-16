@@ -164,3 +164,38 @@ class TestExtractMarkdownLinks(unittest.TestCase):
         print(f"Result: {result}")
         print(f"Validation: [('Link', 'url.com')]")
         self.assertEqual(result, [("Link", "url.com")])
+
+class TestSplitNodesImage(unittest.TestCase):
+    def test_split_nodes_image_single(self):
+        node = TextNode("Here is an image ![alt](image.png) in text.", TextType.TEXT)
+        result = split_nodes_image([node])
+        validation = [TextNode("Here is an image ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "alt", "url": "image.png"}), TextNode(" in text.", TextType.TEXT)]
+        print("\ntest_split_nodes_image_single")
+        print(f"Result: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)
+
+    def test_split_nodes_image_multiple(self):
+        node = TextNode("First ![img1](img1.png) then ![img2](img2.jpg).", TextType.TEXT)
+        result = split_nodes_image([node])
+        validation = [TextNode("First ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "img1", "url": "img1.png"}), TextNode(" then ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "img2", "url": "img2.jpg"}), TextNode(".", TextType.TEXT)]
+        print("\ntest_split_nodes_image_multiple")
+        print(f"Result: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)
+
+    def test_split_nodes_image_none(self):
+        node = TextNode("No images here, just text.", TextType.TEXT)
+        result = split_nodes_image([node])
+        validation = [TextNode("No images here, just text.", TextType.TEXT)]
+        print("\ntest_split_nodes_image_none")
+        print(f"Result: {result}")
+        print(f"Validation: {validation}")
+        self.assertEqual(validation, result)
+
+    def test_split_nodes_image_non_text_node(self):
+        node = HTMLNode("div", None, None, None)
+        print("\ntest_split_nodes_image_non_text_node")
+        print("TypeError: All nodes must be TextNode instances")
+        with self.assertRaisesRegex(TypeError, "All nodes must be TextNode instances"):
+            split_nodes_image([node])

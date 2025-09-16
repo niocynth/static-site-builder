@@ -3,11 +3,9 @@ from htmlnode import *
 from inline import *
 
 def main():
-    temp = TextNode("This is some `anchor` text", TextType.TEXT, "https://www.boot.dev")
+    temp = "An ![image](../images/image.png) in a string (with brackets) and [square brackets] and a picture with no alt ![](../unicorn.gif)"
 
-    print(temp)
-
-    split_nodes_delimited([temp], "`", TextType.CODE)
+    extract_markdown_images(temp)
 
 if __name__ == "__main__":
     main()

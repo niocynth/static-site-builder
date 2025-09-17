@@ -169,7 +169,7 @@ class TestSplitNodesImage(unittest.TestCase):
     def test_split_nodes_image_single(self):
         node = TextNode("Here is an image ![alt](image.png) in text.", TextType.TEXT)
         result = split_nodes_image([node])
-        validation = [TextNode("Here is an image ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "alt", "url": "image.png"}), TextNode(" in text.", TextType.TEXT)]
+        validation = [TextNode("Here is an image ", TextType.TEXT), TextNode("alt", TextType.IMAGE, "image.png"), TextNode(" in text.", TextType.TEXT)]
         print("\ntest_split_nodes_image_single")
         print(f"Result: {result}")
         print(f"Validation: {validation}")
@@ -178,7 +178,7 @@ class TestSplitNodesImage(unittest.TestCase):
     def test_split_nodes_image_multiple(self):
         node = TextNode("First ![img1](img1.png) then ![img2](img2.jpg).", TextType.TEXT)
         result = split_nodes_image([node])
-        validation = [TextNode("First ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "img1", "url": "img1.png"}), TextNode(" then ", TextType.TEXT), TextNode(None, TextType.IMAGE, {"alt": "img2", "url": "img2.jpg"}), TextNode(".", TextType.TEXT)]
+        validation = [TextNode("First ", TextType.TEXT, None), TextNode("img1", TextType.IMAGE, "img1.png"), TextNode(" then ", TextType.TEXT), TextNode("img2", TextType.IMAGE, "img2.jpg"), TextNode(".", TextType.TEXT)]
         print("\ntest_split_nodes_image_multiple")
         print(f"Result: {result}")
         print(f"Validation: {validation}")
@@ -199,3 +199,47 @@ class TestSplitNodesImage(unittest.TestCase):
         print("TypeError: All nodes must be TextNode instances")
         with self.assertRaisesRegex(TypeError, "All nodes must be TextNode instances"):
             split_nodes_image([node])
+
+class TestSplitNodesLink(unittest.TestCase):
+    def test_single_link(self):
+        node = TextNode("Go to [Google](https://google.com) now.", TextType.TEXT)
+        result = split_nodes_link([node])
+        validation = [
+            TextNode("Go to ", TextType.TEXT),
+            TextNode("Google", TextType.LINK, "https://google.com"),
+            TextNode(" now.", TextType.TEXT)
+        ]
+        self.assertEqual(result, validation)
+
+    def test_multiple_links(self):
+        node = TextNode("Visit [One](one.com) and [Two](two.com)!", TextType.TEXT)
+        result = split_nodes_link([node])
+        validation = [
+            TextNode("Visit ", TextType.TEXT),
+            TextNode("One", TextType.LINK, "one.com"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("Two", TextType.LINK, "two.com"),
+            TextNode("!", TextType.TEXT)
+        ]
+        self.assertEqual(result, validation)
+
+    def test_no_links(self):
+        node = TextNode("No markdown links here!", TextType.TEXT)
+        result = split_nodes_link([node])
+        validation = [TextNode("No markdown links here!", TextType.TEXT)]
+        self.assertEqual(result, validation)
+
+    def test_link_at_start(self):
+        node = TextNode("[Start](url.com) and then text.", TextType.TEXT)
+        result = split_nodes_link([node])
+        validation = [
+            TextNode("Start", TextType.LINK, "url.com"),
+            TextNode(" and then text.", TextType.TEXT)
+        ]
+        self.assertEqual(result, validation)
+
+    def test_non_text_node(self):
+        node = TextNode("Some text", TextType.BOLD)
+        result = split_nodes_link([node])
+        validation = [TextNode("Some text", TextType.BOLD)]
+        self.assertEqual(result, validation)

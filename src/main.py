@@ -8,8 +8,10 @@ def main():
 
     extract_markdown_images(temp)
 
-    node = TextNode("First ![img1](img1.png) then ![img2](img2.jpg).", TextType.TEXT)
-    split_nodes_image([node])
+    node = TextNode("First ![img1](img1.png) then [link1](link.com) with [square brackets] and (brackets) and another [link2](https://hello.com) for good measure", TextType.TEXT)
+    result = split_nodes_link([node])
+    print(f"data in: {node}")
+    print(f"final result: {result}")
 
 if __name__ == "__main__":
     main()

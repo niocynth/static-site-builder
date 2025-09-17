@@ -2,16 +2,24 @@ from inline import *
 from textnode import *
 from htmlnode import *
 from inline import *
+from block import *
 
 def main():
-    temp = "An ![image](../images/image.png) in a string (with brackets) and [square brackets] and a picture with no alt ![](../unicorn.gif)"
 
-    extract_markdown_images(temp)
+    md = """
+# This is a heading
 
-    node = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-    result = text_to_textnodes(node)
-    print(f"data in: {node}")
-    print(f"final result: {result}")
+This is a paragraph of text. It has some **bold** and _italic_ words inside of it.
+
+
+
+
+- This is the first list item in a list block
+- This is a list item
+- This is another list item
+
+"""
+    print(markdown_to_blocks(md))
 
 if __name__ == "__main__":
     main()

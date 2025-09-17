@@ -8,8 +8,8 @@ def main():
 
     extract_markdown_images(temp)
 
-    node = TextNode("First ![img1](img1.png) then [link1](link.com) with [square brackets] and (brackets) and another [link2](https://hello.com) for good measure", TextType.TEXT)
-    result = split_nodes_link([node])
+    node = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+    result = text_to_textnodes(node)
     print(f"data in: {node}")
     print(f"final result: {result}")
 

@@ -243,3 +243,78 @@ class TestSplitNodesLink(unittest.TestCase):
         result = split_nodes_link([node])
         validation = [TextNode("Some text", TextType.BOLD)]
         self.assertEqual(result, validation)
+
+class TestTextToTextNodes(unittest.TestCase):
+    def test_plain_text(self):
+        text = "Just some text."
+        result = text_to_textnodes(text)
+        expected = [TextNode("Just some text.", TextType.TEXT)]
+        self.assertEqual(result, expected)
+
+    def test_bold_text(self):
+        text = "This is **bold**."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)
+
+    def test_italic_text(self):
+        text = "This is _italic_."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)
+
+    def test_code_text(self):
+        text = "Here is `code`."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("Here is ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)
+
+    def test_image(self):
+        text = "Look at this ![cat](cat.jpg)."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("Look at this ", TextType.TEXT),
+            TextNode("cat", TextType.IMAGE, "cat.jpg"),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)
+
+    def test_link(self):
+        text = "Go to [Google](https://google.com)."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("Go to ", TextType.TEXT),
+            TextNode("Google", TextType.LINK, "https://google.com"),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)
+
+    def test_mixed_formatting(self):
+        text = "This is **bold**, _italic_, and `code` with a [link](url.com) and ![img](img.png)."
+        result = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(", ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(", and ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" with a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "url.com"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("img", TextType.IMAGE, "img.png"),
+            TextNode(".", TextType.TEXT)
+        ]
+        self.assertEqual(result, expected)

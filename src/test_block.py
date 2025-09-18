@@ -125,5 +125,6 @@ class TestMarkdownToHtmlNode(unittest.TestCase):
         self.assertEqual(node.children[0].tag, "h1")
         self.assertEqual(node.children[1].tag, "p")
         self.assertEqual(node.children[2].tag, "ul")
+        
 if __name__ == "__main__":
     unittest.main()

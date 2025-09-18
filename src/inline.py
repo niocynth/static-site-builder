@@ -71,7 +71,6 @@ def split_nodes_link(old_nodes):
                 text, url = links[0]
                 split.extend(re.split(r'(?<!\!)\[[^\]]+\]\([^)]+\)', node.text, maxsplit=1))
                 split.insert(1, "")
-                print(f"split: {split}")
                 for i in range(3):
                     if i % 2 == 0 and split[i] != "":
                         result.append(TextNode(split[i], TextType.TEXT))
